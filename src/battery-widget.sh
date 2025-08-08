@@ -19,12 +19,12 @@ DISCHARGING_ICONS=("󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂
 CHARGING_ICONS=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
 NOT_CHARGING_ICON="󰚥"
 NO_BATTERY_ICON="󱉝"
-DEFAULT_BATTERY_LOW=21
+DEFAULT_BATTERY_LOW=20
 
 if [[ "$(uname)" == "Darwin" ]]; then
   default_battery_name="InternalBattery-0"
 else
-  default_battery_name="BAT1"
+  default_battery_name="BAT0"
 fi
 
 BATTERY_NAME="${BATTERY_NAME:-$default_battery_name}"

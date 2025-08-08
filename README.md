@@ -1,6 +1,6 @@
 # Gruvbox Tmux
 
-A clean  Tmux theme that  follow the [Gruvbox](https://github.com/morhetz/gruvbox) and Heavily inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux) so, Thanks for them.
+A clean  Tmux theme that  follow the [Gruvbox](https://github.com/morhetz/gruvbox), Inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
 
 ## Requirements
 
@@ -11,31 +11,8 @@ This theme has the following hard requirements:
 
 The following are recommended for full support of all widgets and features:
 
-- [Noto Sans] Symbols 2 (for segmented digit numbers)
 - [bc] (for netspeed and git widgets)
 - [jq], [gh], [glab] (for git widgets)
-- [playerctl] (Linux) or [nowplaying-cli] (macOS) for music statusbar
-### Linux
-
-#### Alpine Linux
-
-```bash
-apk add bash bc coreutils gawk git jq playerctl sed
-```
-
-#### Arch Linux
-
-```bash
-pacman -Sy bash bc coreutils git jq playerctl
-```
-
-#### Ubuntu
-
-```bash
-apt-get install bash bc coreutils gawk git jq playerctl
-```
-
-Check documentation for installing on other operating systems.
 
 ## Installation using TPM
 
@@ -69,77 +46,32 @@ set -g @gruvbox-tmux_zoom_id_style dsquare    # hsquare | fsquare | sub | super 
 
 For widgets add following lines in you `.tmux.conf`
 
-#### Date and Time widget
+#### Time widget
 
 This widget is enabled by default. To disable it:
 
 ```bash
 set -g @gruvbox-tmux_show_datetime 0
-set -g @gruvbox-tmux_date_format MYD
+```
+
+Time options
+
+```bash
 set -g @gruvbox-tmux_time_format 12H
 ```
-
 ##### Available Options
-
-- `YMD`: (Year Month Day), 2024-01-31
-- `MDY`: (Month Day Year), 01-31-2024
-- `DMY`: (Day Month Year), 31-01-2024
-
 - `24H`: 18:30
 - `12H`: 6:30 PM
-
-#### Now Playing widget
-
-```bash
-set -g @gruvbox-tmux_show_music 1
-```
-
-#### Netspeed widget
-![screenshots netspeed](screenshots/netspeed.png)
-
-```bash
-set -g @gruvbox-tmux_show_netspeed 1
-set -g @gruvbox-tmux_netspeed_iface "wlo1" # run `ip a` to see yours
-set -g @gruvbox-tmux_netspeed_showip 1      # Display IPv4 address (default 0)
-set -g @gruvbox-tmux_netspeed_refresh 1     # Update interval in seconds (default 1)
-```
-
-#### Path Widget
-
-```bash
-set -g @gruvbox-tmux_show_path 1
-set -g @gruvbox-tmux_path_format relative # 'relative' or 'full'
-```
 
 #### Battery Widget
 
 ```bash
-set -g @gruvbox-tmux_show_battery_widget 1
-set -g @gruvbox-tmux_battery_name "BAT0"  # some linux distro have 'BAT1'
-set -g @gruvbox-tmux_battery_low_threshold 21 # default
+set -g @gruvbox-tmux_show_battery_widget 1     # 0 to disable
+set -g @gruvbox-tmux_battery_name "BAT0"       # run `ls /sys/class/power_supply` to know
+set -g @gruvbox-tmux_battery_low_threshold 25 
 ```
 
-Set variable value `0` to disable the widget. Remember to restart `tmux` after
-changing values.
-
-## Styles
-
-- `none`: no style, default font
-- `digital`: 7 segment number (🯰...🯹) (needs [Unicode support])
-- `roman`: roman numbers (󱂈...󱂐) (needs nerdfont)
-- `fsquare`: filled square (󰎡...󰎼) (needs nerdfont)
-- `hsquare`: hollow square (󰎣...󰎾) (needs nerdfont)
-- `dsquare`: hollow double square (󰎡...󰎼) (needs nerdfont)
-- `super`: superscript symbol (⁰...⁹)
-- `sub`: subscript symbols (₀...₉)
-
-
-### Demo
-
-![Demo](screenshots/output.webm)
 
 ### Snapshots
-
-- Terminal: St from siduck [St](https://github.com/siduck/st)
 
 ![Snapshot](screenshots/main.png)
