@@ -33,6 +33,13 @@ set -g @gruvbox-tmux_theme "medium"  # medium | soft | Default is hard
 set -g @gruvbox-tmux_transparent 0   # 1 | 0
 ```
 
+### Terminal icons
+
+```bash
+set -g @gruvbox-tmux_terminal_icon 
+set -g @gruvbox-tmux_active_terminal_icon 
+```
+
 ### Number styles
 
 

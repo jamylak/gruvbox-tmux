@@ -25,6 +25,8 @@ tmux set -g status-style "fg=${THEME[foreground]},bg=${THEME[background]}"
 window_id_style="$(tmux show-option -gv @gruvbox-tmux_window_id_style 2>/dev/null || echo "digital")"
 pane_id_style="$(tmux show-option -gv @gruvbox-tmux_pane_id_style 2>/dev/null || echo "hsquare")"
 zoom_id_style="$(tmux show-option -gv @gruvbox-tmux_zoom_id_style 2>/dev/null || echo "dsquare")"
+terminal_icon="$(tmux show-option -gv @gruvbox-tmux_terminal_icon 2>/dev/null || echo '')"
+active_terminal_icon="$(tmux show-option -gv @gruvbox-tmux_active_terminal_icon 2>/dev/null || echo '')"
 
 git_status="#($SCRIPTS_PATH/git-status.sh #{pane_current_path})"
 wb_git_status="#($SCRIPTS_PATH/wb-git-status.sh #{pane_current_path} &)"
@@ -42,7 +44,7 @@ tmux set -g status-left "\
 tmux set -g window-status-current-format "\
 $RESET\
 #[fg=${THEME[bgreen]},bg=${THEME[bblack]}] \
-#{?#{==:#{pane_current_command},ssh},󰣀 , }\
+#{?#{==:#{pane_current_command},ssh},󰣀 ,$active_terminal_icon }\
 #[fg=${THEME[bpurple]},bold,nodim]\
 $window_number\
 #W\
@@ -53,7 +55,7 @@ $window_number\
 tmux set -g window-status-format "\
 $RESET\
 #[fg=${THEME[foreground]}] \
-#{?#{==:#{pane_current_command},ssh},󰣀 , }\
+#{?#{==:#{pane_current_command},ssh},󰣀 ,$terminal_icon }\
 ${RESET}\
 $window_number\
 #W\
