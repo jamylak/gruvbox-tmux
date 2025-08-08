@@ -11,8 +11,8 @@ This theme has the following hard requirements:
 
 The following are recommended for full support of all widgets and features:
 
-- [bc] (for netspeed and git widgets)
-- [jq], [gh], [glab] (for git widgets)
+- bc (for git widgets)
+- jq, gh, glab (for git forges widgets)
 
 ## Installation using TPM
 
