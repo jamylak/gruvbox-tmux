@@ -1,6 +1,6 @@
 # Gruvbox Tmux
 
-A clean  Tmux theme that  follow the [Gruvbox](https://github.com/morhetz/gruvbox), Inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
+A clean  Tmux theme that  follow the [gruvbox](https://github.com/morhetz/gruvbox) colors, Inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
 
 ## Requirements
 
