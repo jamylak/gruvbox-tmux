@@ -1,56 +1,52 @@
 #!/usr/bin/env bash
 
-# Imports
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
-. "${ROOT_DIR}/lib/coreutils-compat.sh"
+. "${ROOT_DIR}/src/themes.sh" || {
+    echo "Error: Failed to source themes.sh" >&2
+    exit 1
+}
 
-# Check if the battery widget is enabled
 SHOW_BATTERY_WIDGET=$(tmux show-option -gv @gruvbox-tmux_show_battery_widget 2>/dev/null)
-if [ "${SHOW_BATTERY_WIDGET}" != "1" ]; then
-  exit 0
+if [[ "${SHOW_BATTERY_WIDGET}" != 1 ]]; then
+    exit 0
 fi
 
-# Get values from tmux config or set defaults
 BATTERY_NAME=$(tmux show-option -gv @gruvbox-tmux_battery_name 2>/dev/null)
 BATTERY_LOW=$(tmux show-option -gv @gruvbox-tmux_battery_low_threshold 2>/dev/null)
-RESET="#[fg=brightwhite,bg=#15161e,nobold,noitalics,nounderscore,nodim]"
+DEFAULT_BATTERY_LOW=20
+BATTERY_LOW="${BATTERY_LOW:-$DEFAULT_BATTERY_LOW}"
 
 DISCHARGING_ICONS=("󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
 CHARGING_ICONS=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
 NOT_CHARGING_ICON="󰚥"
 NO_BATTERY_ICON="󱉝"
-DEFAULT_BATTERY_LOW=20
 
-if [[ "$(uname)" == "Darwin" ]]; then
-  default_battery_name="InternalBattery-0"
-else
-  default_battery_name="BAT0"
-fi
-
+case "$(uname -s)" in
+    Darwin*)    default_battery_name="InternalBattery-0" ;;
+    Linux*)     default_battery_name="BAT0" ;;
+    *)          default_battery_name="BAT0" ;;
+esac
 BATTERY_NAME="${BATTERY_NAME:-$default_battery_name}"
-BATTERY_LOW="${BATTERY_LOW:-$DEFAULT_BATTERY_LOW}"
 
-# Check if battery exists
 battery_exists() {
-  case "$(uname)" in
-  "Darwin")
-    pmset -g batt | grep -q "$BATTERY_NAME"
-    ;;
-  "Linux")
-    [[ -d "/sys/class/power_supply/$BATTERY_NAME" ]]
-    ;;
-  "CYGWIN" | "MINGW" | "MSYS" | "Windows_NT")
-    WMIC PATH Win32_Battery Get EstimatedChargeRemaining 2>&1 | grep -q "EstimatedChargeRemaining"
-    ;;
-  *)
-    return 1
-    ;;
-  esac
+    case "$(uname -s)" in
+        Darwin*)
+            pmset -g batt | grep -q "$BATTERY_NAME"
+            ;;
+        Linux*)
+            [[ -d "/sys/class/power_supply/$BATTERY_NAME" ]]
+            ;;
+        CYGWIN*|MINGW*|MSYS*|Windows_NT*)
+            WMIC PATH Win32_Battery Get EstimatedChargeRemaining 2>/dev/null | grep -q "EstimatedChargeRemaining"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
 }
 
-# Exit if no battery is found
 if ! battery_exists; then
-  exit 0
+    exit 0
 fi
 
 # Get battery stats for different OS
@@ -111,14 +107,12 @@ case "$BATTERY_STATUS" in
   ;;
 esac
 
-# Set color based on battery percentage
-if [[ $BATTERY_PERCENTAGE -lt $BATTERY_LOW ]]; then
-  color="#[fg=red,bg=default,bold]"
-elif [[ $BATTERY_PERCENTAGE -ge 100 ]]; then
-  color="#[fg=green,bg=default]"
+if [[ "$BATTERY_PERCENTAGE" -lt "$BATTERY_LOW" ]]; then
+    color="#[fg=${THEME[red]},bg=default,bold]"
+elif [[ "$BATTERY_PERCENTAGE" -ge 100 ]]; then
+    color="#[fg=${THEME[green]},bg=default]"
 else
-  color="#[fg=yellow,bg=default]"
+    color="#[fg=${THEME[yellow]},bg=default]"
 fi
 
-# Print the battery status with some extra spaces for padding
-echo "${color}░ ${ICON}${RESET} #[bg=default] ${BATTERY_PERCENTAGE}% "
+echo -n "${color}░ ${ICON}#[bg=default] ${BATTERY_PERCENTAGE}% "

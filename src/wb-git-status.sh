@@ -5,8 +5,10 @@ if [ "$SHOW_WIDGET" == "0" ]; then
 fi
 
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$CURRENT_DIR/../lib/coreutils-compat.sh"
-source "$CURRENT_DIR/themes.sh"
+source "${CURRENT_DIR}/themes.sh" || {
+    echo "Error: Failed to source themes.sh" >&2
+    exit 1
+}
 
 cd "$1" || exit 1
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)

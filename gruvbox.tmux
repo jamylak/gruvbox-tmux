@@ -38,7 +38,7 @@ battery_status="#($SCRIPTS_PATH/battery-widget.sh)"
 
 tmux set -g status-left "\
 #[fg=${THEME[foreground]},bg=${THEME[blue]},bold] \
-#{?client_prefix,󰠠 ,#[dim]󰤂 }\
+#{?client_prefix,󰠠 ,󰤂 }\
 #[bold,nodim]#S "
 
 tmux set -g window-status-current-format "\

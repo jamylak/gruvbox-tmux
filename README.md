@@ -1,5 +1,7 @@
 # Gruvbox Tmux
 
+![Overview](screenshots/overview.png)
+
 A clean  Tmux theme that  follow the [gruvbox](https://github.com/morhetz/gruvbox) colors, Inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
 
 ## Requirements
@@ -81,4 +83,5 @@ set -g @gruvbox-tmux_battery_low_threshold 25
 
 ### Snapshots
 
-![Snapshot](screenshots/main.png)
+![Hard](screenshots/hard.png)
+![Light](screenshots/light.png)
