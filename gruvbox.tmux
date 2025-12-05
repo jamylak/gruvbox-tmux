@@ -11,7 +11,7 @@ source "$SCRIPTS_PATH/themes.sh" || {
 tmux set -g status-left-length 80
 tmux set -g status-right-length 150
 
-tmux set -g mode-style "fg=default,bg=default,reverse"
+tmux set -g mode-style "fg=${THEME[background]},bg=${THEME[foreground]},reverse"
 
 tmux set -g message-style "bg=${THEME[bblue]},fg=${THEME[background]},bold"
 tmux set -g message-command-style "fg=${THEME[white]},bg=${THEME[black]},bold"
