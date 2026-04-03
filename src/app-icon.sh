@@ -2,6 +2,7 @@
 
 command_name="${1:-}"
 is_active="${2:-0}"
+command_name="${command_name,,}"
 
 terminal_icon="$(tmux show-option -gv @gruvbox-tmux_terminal_icon 2>/dev/null || echo '')"
 active_terminal_icon="$(tmux show-option -gv @gruvbox-tmux_active_terminal_icon 2>/dev/null || echo '')"
@@ -79,7 +80,7 @@ case "$command_name" in
     cargo|rustc|rustup)
         icon='🦀'
         ;;
-    uv|uvx|[Pp]ython*)
+    uv|uvx|python*)
         icon='🐍'
         ;;
     go)
