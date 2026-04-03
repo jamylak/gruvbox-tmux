@@ -136,12 +136,15 @@ TTL=$(cache_ttl)
 NOW=$(date +%s)
 
 if [[ -f $CACHE_FILE ]]; then
-  printf '%s' "$(cat "$CACHE_FILE")"
+  # tmux only treats #() jobs as ready after it receives a full line.
+  printf '%s\n' "$(cat "$CACHE_FILE")"
 
   CACHE_AGE=$((NOW - $(cache_mtime "$CACHE_FILE")))
   if ((CACHE_AGE < TTL)); then
     exit 0
   fi
+else
+  printf '\n'
 fi
 
 if acquire_lock; then
