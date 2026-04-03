@@ -32,7 +32,8 @@ fi
 
 if [[ $PROVIDER == "github.com" ]]; then
   if ! command -v gh &>/dev/null; then
-    exit 1
+    printf ' '
+    exit 0
   fi
   PROVIDER_ICON="$RESET#[fg=${THEME[foreground]}] "
   PR_COUNT=$(gh pr list --json number --jq 'length' | bc)
@@ -43,13 +44,15 @@ if [[ $PROVIDER == "github.com" ]]; then
   ISSUE_COUNT=$((ISSUE_COUNT - BUG_COUNT))
 elif [[ $PROVIDER == "gitlab.com" ]]; then
   if ! command -v glab &>/dev/null; then
-    exit 1
+    printf ' '
+    exit 0
   fi
   PROVIDER_ICON="$RESET#[fg=#fc6d26] "
   PR_COUNT=$(glab mr list | grep -cE "^\!")
   REVIEW_COUNT=$(glab mr list --reviewer=@me | grep -cE "^\!")
   ISSUE_COUNT=$(glab issue list | grep -cE "^\#")
 else
+  printf ' '
   exit 0
 fi
 
