@@ -2,7 +2,9 @@
 
 ![Overview](screenshots/overview.png)
 
-A clean  Tmux theme that  follow the [gruvbox](https://github.com/morhetz/gruvbox) colors, Inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
+This fork starts from [motaz-shokry/gruvbox-tmux](https://gitlab.com/motaz-shokry/gruvbox-tmux) and keeps clear attribution to the original project while making the customized status layout the default.
+
+A clean tmux theme that follows the [gruvbox](https://github.com/morhetz/gruvbox) colors, inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
 
 ## Requirements
 
@@ -18,21 +20,22 @@ The following are recommended for full support of all widgets and features:
 
 ## Installation using TPM
 
-In your `tmux.conf` add :
+In your `tmux.conf`, point TPM at this fork's Git URL:
 
 ```bash
-set -g @plugin "https://gitlab.com/motaz-shokry/gruvbox-tmux"
+set -g @plugin "https://github.com/jamylak/gruvbox-tmux"
 ```
 
 ## Configuration
 
-Add these lines to your  `.tmux.conf`:
+Add these lines to your `.tmux.conf`:
 
 ### Theme Flavor
 
 ```bash
-set -g @gruvbox-tmux_theme "medium"  # medium | soft | Default is hard  
-set -g @gruvbox-tmux_transparent 0   # 1 | 0
+set -g @gruvbox-tmux_theme "medium"   # medium | soft | default is medium
+set -g @gruvbox-tmux_transparent 0    # 1 | 0
+set -g @gruvbox-tmux_status_interval 10
 ```
 
 ### Terminal icons
@@ -53,14 +56,19 @@ set -g @gruvbox-tmux_zoom_id_style dsquare    # hsquare | fsquare | sub | super 
 
 ### Widgets
 
-For widgets add following lines in you `.tmux.conf`
+This fork's default status line shows:
+
+- left: prefix/copy-mode/normal icons with the session name
+- right: git status, forge status, battery, and CPU/RAM metrics
+
+You can tune the widgets with the following options.
 
 #### Time widget
 
-This widget is enabled by default. To disable it:
+This widget is hidden by default. To enable it:
 
 ```bash
-set -g @gruvbox-tmux_show_datetime 0
+set -g @gruvbox-tmux_show_datetime 1
 ```
 
 Time options
@@ -68,6 +76,7 @@ Time options
 ```bash
 set -g @gruvbox-tmux_time_format 12H
 ```
+
 ##### Available Options
 - `24H`: 18:30
 - `12H`: 6:30 PM
@@ -79,6 +88,16 @@ set -g @gruvbox-tmux_show_battery_widget 1     # 0 to disable
 set -g @gruvbox-tmux_battery_name "BAT0"       # run `ls /sys/class/power_supply` to know
 set -g @gruvbox-tmux_battery_low_threshold 25 
 ```
+
+#### System metrics widget
+
+This widget is enabled by default.
+
+```bash
+set -g @gruvbox-tmux_show_metrics 0
+```
+
+It shows CPU and RAM usage and supports macOS and Linux.
 
 
 ### Snapshots
