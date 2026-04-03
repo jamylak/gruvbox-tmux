@@ -59,6 +59,9 @@ case "$command_name" in
     gcloud)
         icon='☁️'
         ;;
+    terraform|tofu)
+        icon='💠'
+        ;;
     docker|docker-compose)
         icon='🐳'
         ;;
