@@ -58,11 +58,32 @@ case "$command_name" in
     gcloud)
         icon='☁️'
         ;;
+    npm|npx)
+        icon='📦'
+        ;;
+    node)
+        icon='⬢'
+        ;;
+    pnpm)
+        icon='📫'
+        ;;
+    yarn)
+        icon='🧶'
+        ;;
+    bun)
+        icon='🥟'
+        ;;
+    deno)
+        icon='🦕'
+        ;;
     cargo|rustc|rustup)
         icon='🦀'
         ;;
-    python|python3|ipython)
+    uv|uvx|[Pp]ython*)
         icon='🐍'
+        ;;
+    go)
+        icon='🐹'
         ;;
     nu|nushell)
         icon='◉'
