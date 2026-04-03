@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-# Grab global variable for showing datetime widget, only hide if explicitly disabled
-SHOW_DATETIME=$(tmux show-option -gv @gruvbox-tmux_show_time 2>/dev/null)
-if [[ $SHOW_DATETIME == "0" ]]; then
-  exit 0
+show_datetime=$(tmux show-option -gv @gruvbox-tmux_show_datetime 2>/dev/null)
+if [[ -z "${show_datetime}" ]]; then
+    show_datetime=$(tmux show-option -gv @gruvbox-tmux_show_time 2>/dev/null)
+fi
+
+if [[ "${show_datetime}" != "1" ]]; then
+    exit 0
 fi
 
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -12,9 +15,7 @@ source "${CURRENT_DIR}/themes.sh" || {
     exit 1
 }
 
-# Assign values based on user config
 time_format=$(tmux show-option -gv @gruvbox-tmux_time_format 2>/dev/null)
-
 time_string=""
 
 case "$time_format" in
@@ -31,4 +32,4 @@ esac
 
 separator="▒"
 
-echo "$RESET#[fg=${THEME[purple]},bg=${THEME[black]}]$separator 󰥔 $time_string"
+echo "$RESET#[fg=${THEME[purple]},bg=${THEME[background]}]$separator 󰥔 $time_string"

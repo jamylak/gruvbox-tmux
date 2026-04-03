@@ -71,7 +71,7 @@ fi
 
 WB_STATUS="#[fg=${THEME[black]},bg=${THEME[background]},bold] $RESET$PROVIDER_ICON $RESET$PR_STATUS$REVIEW_STATUS$ISSUE_STATUS$BUG_STATUS"
 
-echo "$WB_STATUS"
+printf '%s' "$WB_STATUS"
 
 # Wait extra time if status-interval is less than 30 seconds to
 # avoid to overload GitHub API
