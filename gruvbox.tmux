@@ -8,8 +8,11 @@ source "$SCRIPTS_PATH/themes.sh" || {
     exit 1
 }
 
+status_interval="$(tmux show-option -gv @gruvbox-tmux_status_interval 2>/dev/null || echo "10")"
+
 tmux set -g status-left-length 80
-tmux set -g status-right-length 150
+tmux set -g status-right-length 220
+tmux set -g status-interval "$status_interval"
 
 tmux set -g mode-style "fg=${THEME[background]},bg=${THEME[foreground]},reverse"
 
@@ -35,10 +38,11 @@ custom_pane="#($SCRIPTS_PATH/custom-number.sh #P $pane_id_style)"
 zoom_number="#($SCRIPTS_PATH/custom-number.sh #P $zoom_id_style)"
 date_and_time="$($SCRIPTS_PATH/datetime-widget.sh)"
 battery_status="#($SCRIPTS_PATH/battery-widget.sh)"
+metrics_status="#($SCRIPTS_PATH/metrics-widget.sh)"
 
 tmux set -g status-left "\
 #[fg=${THEME[foreground]},bg=${THEME[blue]},bold] \
-#{?client_prefix,󰠠 ,󰤂 }\
+#{?client_prefix,🚀 ,#{?pane_in_mode,👀 ,🔮 }}\
 #[bold,nodim]#S "
 
 tmux set -g window-status-current-format "\
@@ -65,10 +69,11 @@ $window_number\
 #{?window_last_flag, ,}"
 
 right_status="\
-#[fg=${THEME[ghgreen]},bg=${THEME[black]}]$git_status\
-#[fg=${THEME[ghpurple]},bg=${THEME[black]}]$wb_git_status\
-#[fg=${THEME[ghred]},bg=${THEME[black]}]$battery_status\
-#[fg=${THEME[ghyellow]},bg=${THEME[black]}]$date_and_time"
+#[fg=${THEME[ghgreen]},bg=${THEME[background]}]$git_status\
+#[fg=${THEME[ghpurple]},bg=${THEME[background]}]$wb_git_status\
+#[fg=${THEME[ghred]},bg=${THEME[background]}]$battery_status\
+$metrics_status\
+$date_and_time"
 
 tmux set -g status-right "$right_status"
 
