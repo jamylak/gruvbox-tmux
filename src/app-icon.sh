@@ -59,6 +59,9 @@ case "$command_name" in
     gcloud)
         icon='☁️'
         ;;
+    docker|docker-compose)
+        icon='🐳'
+        ;;
     npm|npx)
         icon='📦'
         ;;
@@ -82,6 +85,12 @@ case "$command_name" in
         ;;
     uv|uvx|python*)
         icon='🐍'
+        ;;
+    uvicorn)
+        icon='🦄'
+        ;;
+    psql)
+        icon='🐘'
         ;;
     go)
         icon='🐹'

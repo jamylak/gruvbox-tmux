@@ -54,7 +54,7 @@ Built-in app badges now cover:
 - editors: Helix, Neovim/Vim, Emacs
 - tools: Yazi, Lazygit, btop
 - shell/session: fish, tmux, ssh
-- CLIs: gh, glab, gcloud, Cargo/Rust, Python, Nushell
+- CLIs: gh, glab, gcloud, Docker/Compose, psql, Cargo/Rust, Python/Uvicorn, Nushell
 
 ### Number styles
 
