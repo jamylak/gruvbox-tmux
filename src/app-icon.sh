@@ -20,13 +20,13 @@ case "$command_name" in
     ssh)
         icon='󰣀'
         ;;
-    claude|claude-code)
+    claude|claude-*|claude-code|claude-code-*)
         icon="$claude_icon"
         ;;
-    copilot|github-copilot-cli|copilot-cli)
+    copilot|copilot-*|github-copilot-cli|github-copilot-cli-*|copilot-cli|copilot-cli-*)
         icon="$copilot_icon"
         ;;
-    codex)
+    codex|codex-*)
         icon="$codex_icon"
         ;;
     hx|helix)
