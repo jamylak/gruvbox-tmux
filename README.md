@@ -43,7 +43,18 @@ set -g @gruvbox-tmux_status_interval 10
 ```bash
 set -g @gruvbox-tmux_terminal_icon 
 set -g @gruvbox-tmux_active_terminal_icon 
+set -g @gruvbox-tmux_claude_icon 🌼
+set -g @gruvbox-tmux_copilot_icon 🐙
+set -g @gruvbox-tmux_codex_icon 🤖
 ```
+
+Built-in app badges now cover:
+
+- AI CLIs: Claude Code, Copilot, Codex
+- editors: Helix, Neovim/Vim, Emacs
+- tools: Yazi, Lazygit, btop
+- shell/session: fish, tmux, ssh
+- CLIs: gh, glab, gcloud, Cargo/Rust, Python, Nushell
 
 ### Number styles
 
