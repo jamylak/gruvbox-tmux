@@ -11,12 +11,14 @@ A clean tmux theme that follows the [gruvbox](https://github.com/morhetz/gruvbox
 This theme has the following hard requirements:
 
 - Any font from [Nerd Fonts](https://www.nerdfonts.com/) 
-- [Bash](https://www.gnu.org/software/bash/)
+- [Bash](https://www.gnu.org/software/bash/) 3.2 or newer
 
 The following are recommended for full support of all widgets and features:
 
 - bc (for git widgets)
 - jq, gh, glab (for git forges widgets)
+
+The scripts are kept Bash-compatible so macOS's stock `/bin/bash` works. No fish dependency is required.
 
 ## Installation using TPM
 

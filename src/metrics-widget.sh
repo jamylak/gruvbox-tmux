@@ -155,10 +155,10 @@ ram_color=$(color_for_percent "$ram")
 
 printf '%s#[fg=%s,bg=%s,bold]▒ #[fg=%s,bg=%s,bold]🧠 #[fg=%s,bg=%s,bold]%s %s%% #[fg=%s,bg=%s,bold]💾 #[fg=%s,bg=%s,bold]%s %s%% ' \
     "$RESET" \
-    "${THEME[ghyellow]}" "${THEME[background]}" \
-    "${THEME[foreground]}" "${THEME[background]}" \
-    "$cpu_color" "${THEME[background]}" \
+    "${THEME_ghyellow}" "${THEME_background}" \
+    "${THEME_foreground}" "${THEME_background}" \
+    "$cpu_color" "${THEME_background}" \
     "$cpu_bar" "$cpu" \
-    "${THEME[foreground]}" "${THEME[background]}" \
-    "$ram_color" "${THEME[background]}" \
+    "${THEME_foreground}" "${THEME_background}" \
+    "$ram_color" "${THEME_background}" \
     "$ram_bar" "$ram"

@@ -63,7 +63,7 @@ build_status() {
       printf ' '
       return 0
     fi
-    provider_icon="$RESET#[fg=${THEME[foreground]}] "
+    provider_icon="$RESET#[fg=${THEME_foreground}] "
     pr_count=$(gh pr list --json number --jq 'length')
     review_count=$(gh pr status --json reviewRequests --jq '.needsReview | length')
     res=$(gh issue list --json "assignees,labels" --assignee @me)
@@ -85,45 +85,31 @@ build_status() {
   fi
 
   if ((pr_count > 0)); then
-    pr_status="#[fg=${THEME[ghgreen]},bg=${THEME[background]},bold] ${RESET}${pr_count} "
+    pr_status="#[fg=${THEME_ghgreen},bg=${THEME_background},bold] ${RESET}${pr_count} "
   fi
 
   if ((review_count > 0)); then
-    review_status="#[fg=${THEME[ghyellow]},bg=${THEME[background]},bold] ${RESET}${review_count} "
+    review_status="#[fg=${THEME_ghyellow},bg=${THEME_background},bold] ${RESET}${review_count} "
   fi
 
   if ((issue_count > 0)); then
-    issue_status="#[fg=${THEME[ghgreen]},bg=${THEME[background]},bold] ${RESET}${issue_count} "
+    issue_status="#[fg=${THEME_ghgreen},bg=${THEME_background},bold] ${RESET}${issue_count} "
   fi
 
   if ((bug_count > 0)); then
-    bug_status="#[fg=${THEME[ghred]},bg=${THEME[background]},bold] ${RESET}${bug_count} "
+    bug_status="#[fg=${THEME_ghred},bg=${THEME_background},bold] ${RESET}${bug_count} "
   fi
 
-  wb_status="#[fg=${THEME[black]},bg=${THEME[background]},bold] $RESET$provider_icon $RESET$pr_status$review_status$issue_status$bug_status"
+  wb_status="#[fg=${THEME_black},bg=${THEME_background},bold] $RESET$provider_icon $RESET$pr_status$review_status$issue_status$bug_status"
   printf '%s' "$wb_status"
 }
 
 acquire_lock() {
-  if (set -o noclobber; printf '%s\n' "$BASHPID" > "$lock_file") 2>/dev/null; then
-    return 0
-  fi
-
-  local lock_pid=""
-  if [[ -f $lock_file ]]; then
-    read -r lock_pid < "$lock_file"
-  fi
-
-  if [[ -n $lock_pid ]] && kill -0 "$lock_pid" 2>/dev/null; then
-    return 1
-  fi
-
-  rm -f "$lock_file"
-  (set -o noclobber; printf '%s\n' "$BASHPID" > "$lock_file") 2>/dev/null
+  mkdir "$lock_dir" 2>/dev/null
 }
 
 release_lock() {
-  rm -f "$lock_file"
+  rmdir "$lock_dir" 2>/dev/null
 }
 
 CACHE_ROOT="${TMPDIR:-/tmp}/gruvbox-tmux-wb-git-status"
@@ -131,7 +117,7 @@ mkdir -p "$CACHE_ROOT" 2>/dev/null || exit 0
 
 CACHE_KEY=$(printf '%s\n' "$TARGET_PATH" | cksum | awk '{print $1}')
 CACHE_FILE="${CACHE_ROOT}/${CACHE_KEY}.cache"
-lock_file="${CACHE_ROOT}/${CACHE_KEY}.lock"
+lock_dir="${CACHE_ROOT}/${CACHE_KEY}.lock"
 TTL=$(cache_ttl)
 NOW=$(date +%s)
 

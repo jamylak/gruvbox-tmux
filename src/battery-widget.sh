@@ -108,11 +108,11 @@ case "$BATTERY_STATUS" in
 esac
 
 if [[ "$BATTERY_PERCENTAGE" -lt "$BATTERY_LOW" ]]; then
-    color="#[fg=${THEME[red]},bg=${THEME[background]},bold]"
+    color="#[fg=${THEME_red},bg=${THEME_background},bold]"
 elif [[ "$BATTERY_PERCENTAGE" -ge 100 ]]; then
-    color="#[fg=${THEME[green]},bg=${THEME[background]}]"
+    color="#[fg=${THEME_green},bg=${THEME_background}]"
 else
-    color="#[fg=${THEME[yellow]},bg=${THEME[background]}]"
+    color="#[fg=${THEME_yellow},bg=${THEME_background}]"
 fi
 
-echo -n "${color}░ ${ICON}#[bg=${THEME[background]}] ${BATTERY_PERCENTAGE}% "
+echo -n "${color}░ ${ICON}#[bg=${THEME_background}] ${BATTERY_PERCENTAGE}% "

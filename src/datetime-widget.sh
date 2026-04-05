@@ -32,4 +32,4 @@ esac
 
 separator="▒"
 
-echo "$RESET#[fg=${THEME[purple]},bg=${THEME[background]}]$separator 󰥔 $time_string"
+echo "$RESET#[fg=${THEME_purple},bg=${THEME_background}]$separator 󰥔 $time_string"

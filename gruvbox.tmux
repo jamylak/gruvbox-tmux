@@ -14,16 +14,16 @@ tmux set -g status-left-length 80
 tmux set -g status-right-length 220
 tmux set -g status-interval "$status_interval"
 
-tmux set -g mode-style "fg=${THEME[background]},bg=${THEME[foreground]},reverse"
+tmux set -g mode-style "fg=${THEME_background},bg=${THEME_foreground},reverse"
 
-tmux set -g message-style "bg=${THEME[bblue]},fg=${THEME[background]},bold"
-tmux set -g message-command-style "fg=${THEME[white]},bg=${THEME[black]},bold"
+tmux set -g message-style "bg=${THEME_bblue},fg=${THEME_background},bold"
+tmux set -g message-command-style "fg=${THEME_white},bg=${THEME_black},bold"
 
-tmux set -g pane-border-style "fg=${THEME[bblack]}"
-tmux set -g pane-active-border-style "fg=${THEME[white]},bold"
+tmux set -g pane-border-style "fg=${THEME_bblack}"
+tmux set -g pane-active-border-style "fg=${THEME_white},bold"
 tmux set -g pane-border-status off
 
-tmux set -g status-style "fg=${THEME[foreground]},bg=${THEME[background]}"
+tmux set -g status-style "fg=${THEME_foreground},bg=${THEME_background}"
 
 window_id_style="$(tmux show-option -gv @gruvbox-tmux_window_id_style 2>/dev/null || echo "digital")"
 pane_id_style="$(tmux show-option -gv @gruvbox-tmux_pane_id_style 2>/dev/null || echo "hsquare")"
@@ -43,15 +43,15 @@ battery_status="#($SCRIPTS_PATH/battery-widget.sh)"
 metrics_status="#($SCRIPTS_PATH/metrics-widget.sh)"
 
 tmux set -g status-left "\
-#[fg=${THEME[foreground]},bg=${THEME[blue]},bold] \
+#[fg=${THEME_foreground},bg=${THEME_blue},bold] \
 #{?client_prefix,🚀 ,#{?pane_in_mode,👀 ,🔮 }}\
 #[bold,nodim]#S "
 
 tmux set -g window-status-current-format "\
 $RESET\
-#[fg=${THEME[bgreen]},bg=${THEME[bblack]}] \
+#[fg=${THEME_bgreen},bg=${THEME_bblack}] \
 $active_window_icon\
-#[fg=${THEME[bpurple]},bold,nodim]\
+#[fg=${THEME_bpurple},bold,nodim]\
 $window_number\
 #W\
 #[nobold]\
@@ -60,20 +60,20 @@ $window_number\
 
 tmux set -g window-status-format "\
 $RESET\
-#[fg=${THEME[foreground]}] \
+#[fg=${THEME_foreground}] \
 $window_icon\
 ${RESET}\
 $window_number\
 #W\
 #[nobold,dim]\
 #{?window_zoomed_flag, $zoom_number, $custom_pane}\
-#[fg=${THEME[yellow]}]\
+#[fg=${THEME_yellow}]\
 #{?window_last_flag, ,}"
 
 right_status="\
-#[fg=${THEME[ghgreen]},bg=${THEME[background]}]$git_status\
-#[fg=${THEME[ghpurple]},bg=${THEME[background]}]$wb_git_status\
-#[fg=${THEME[ghred]},bg=${THEME[background]}]$battery_status\
+#[fg=${THEME_ghgreen},bg=${THEME_background}]$git_status\
+#[fg=${THEME_ghpurple},bg=${THEME_background}]$wb_git_status\
+#[fg=${THEME_ghred},bg=${THEME_background}]$battery_status\
 $metrics_status\
 $date_and_time"
 
