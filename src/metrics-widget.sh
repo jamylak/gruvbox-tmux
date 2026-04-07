@@ -11,6 +11,34 @@ source "${CURRENT_DIR}/themes.sh" || {
     exit 1
 }
 
+cache_mtime() {
+    local path=$1
+
+    case "$(uname -s)" in
+        Darwin*)
+            stat -f %m "$path" 2>/dev/null
+            ;;
+        *)
+            stat -c %Y "$path" 2>/dev/null
+            ;;
+    esac
+}
+
+cache_ttl() {
+    local interval
+    interval=$(tmux display -p '#{status-interval}' 2>/dev/null || echo 10)
+
+    if ! [[ $interval =~ ^[0-9]+$ ]]; then
+        interval=10
+    fi
+
+    if ((interval < 2)); then
+        interval=2
+    fi
+
+    printf '%s\n' "$interval"
+}
+
 clamp_percent() {
     local percent=$1
 
@@ -146,19 +174,68 @@ ram_percent() {
     esac
 }
 
-cpu=$(clamp_percent "$(cpu_percent)")
-ram=$(clamp_percent "$(ram_percent)")
-cpu_bar=$(bar_for_percent "$cpu")
-ram_bar=$(bar_for_percent "$ram")
-cpu_color=$(color_for_percent "$cpu")
-ram_color=$(color_for_percent "$ram")
+build_status() {
+    local cpu ram cpu_bar ram_bar cpu_color ram_color
 
-printf '%s#[fg=%s,bg=%s,bold]▒ #[fg=%s,bg=%s,bold]🧠 #[fg=%s,bg=%s,bold]%s %s%% #[fg=%s,bg=%s,bold]💾 #[fg=%s,bg=%s,bold]%s %s%% ' \
-    "$RESET" \
-    "${THEME_ghyellow}" "${THEME_background}" \
-    "${THEME_foreground}" "${THEME_background}" \
-    "$cpu_color" "${THEME_background}" \
-    "$cpu_bar" "$cpu" \
-    "${THEME_foreground}" "${THEME_background}" \
-    "$ram_color" "${THEME_background}" \
-    "$ram_bar" "$ram"
+    cpu=$(clamp_percent "$(cpu_percent)")
+    ram=$(clamp_percent "$(ram_percent)")
+    cpu_bar=$(bar_for_percent "$cpu")
+    ram_bar=$(bar_for_percent "$ram")
+    cpu_color=$(color_for_percent "$cpu")
+    ram_color=$(color_for_percent "$ram")
+
+    printf '%s#[fg=%s,bg=%s,bold]▒ #[fg=%s,bg=%s,bold]🧠 #[fg=%s,bg=%s,bold]%s %s%% #[fg=%s,bg=%s,bold]💾 #[fg=%s,bg=%s,bold]%s %s%% ' \
+        "$RESET" \
+        "${THEME_ghyellow}" "${THEME_background}" \
+        "${THEME_foreground}" "${THEME_background}" \
+        "$cpu_color" "${THEME_background}" \
+        "$cpu_bar" "$cpu" \
+        "${THEME_foreground}" "${THEME_background}" \
+        "$ram_color" "${THEME_background}" \
+        "$ram_bar" "$ram"
+}
+
+acquire_lock() {
+    mkdir "$lock_dir" 2>/dev/null
+}
+
+release_lock() {
+    rmdir "$lock_dir" 2>/dev/null
+}
+
+CACHE_ROOT="${TMPDIR:-/tmp}/gruvbox-tmux-metrics-widget"
+mkdir -p "$CACHE_ROOT" 2>/dev/null || exit 0
+
+CACHE_FILE="${CACHE_ROOT}/metrics.cache"
+lock_dir="${CACHE_ROOT}/metrics.lock"
+TTL=$(cache_ttl)
+NOW=$(date +%s)
+
+if [[ -f $CACHE_FILE ]]; then
+    # tmux only treats #() jobs as ready after it receives a full line.
+    printf '%s\n' "$(cat "$CACHE_FILE")"
+
+    CACHE_AGE=$((NOW - $(cache_mtime "$CACHE_FILE")))
+    if ((CACHE_AGE < TTL)); then
+        exit 0
+    fi
+else
+    printf '\n'
+fi
+
+if acquire_lock; then
+    (
+        trap release_lock EXIT
+
+        tmp_file=$(mktemp "${CACHE_ROOT}/metrics.XXXXXX") || exit 0
+        status_output=$(build_status)
+
+        if ! printf '%s' "$status_output" > "$tmp_file"; then
+            rm -f "$tmp_file"
+            exit 0
+        fi
+
+        mv "$tmp_file" "$CACHE_FILE"
+        tmux refresh-client -S >/dev/null 2>&1
+    ) >/dev/null 2>&1 </dev/null &
+fi
