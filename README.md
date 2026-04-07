@@ -1,119 +1,137 @@
 # Gruvbox Tmux
 
-![Overview](screenshots/overview.png)
+![Bottom Bar](assets/bottom_bar1.png)
 
-This fork starts from [motaz-shokry/gruvbox-tmux](https://gitlab.com/motaz-shokry/gruvbox-tmux) and keeps clear attribution to the original project while making the customized status layout the default.
+This repo is a fork of [motaz-shokry/gruvbox-tmux](https://gitlab.com/motaz-shokry/gruvbox-tmux), but it has diverged into a more opinionated daily-driver tmux status bar focused on development workflows.
 
-A clean tmux theme that follows the [gruvbox](https://github.com/morhetz/gruvbox) colors, inspired by [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux).
+It keeps the gruvbox palette, but the layout and widgets are tuned around:
+
+- pane command icons, including Claude Code, Copilot, and Codex as well as eg. Python, Node, etc
+- Git repo status in the right status bar
+- GitHub/GitLab workbench status via `gh` or `glab`
+- battery and system metrics widgets
+- cached background refreshes for the heavier widgets so tmux stays responsive
 
 ## Requirements
 
-This theme has the following hard requirements:
+- tmux
+- a Nerd Font
+- Bash 3.2+
 
-- Any font from [Nerd Fonts](https://www.nerdfonts.com/) 
-- [Bash](https://www.gnu.org/software/bash/) 3.2 or newer
+Optional tools:
 
-The following are recommended for full support of all widgets and features:
+- `gh`, `glab`, `jq` for the forge/workbench widget
 
-- bc (for git widgets)
-- jq, gh, glab (for git forges widgets)
+## Install
 
-The scripts are kept Bash-compatible so macOS's stock `/bin/bash` works. No fish dependency is required.
+With TPM:
 
-## Installation using TPM
-
-In your `tmux.conf`, point TPM at this fork's Git URL:
-
-```bash
+```tmux
 set -g @plugin "https://github.com/jamylak/gruvbox-tmux"
+run "~/.tmux/plugins/tpm/tpm"
 ```
+
+## What This Fork Does
+
+The default status line is built around a dense bottom bar:
+
+- left: session state icon plus session name
+- windows: per-pane command icons, styled window numbers, pane IDs, zoom badge
+- right: git status, forge status, battery, CPU/RAM metrics, optional clock
+
+Compared with the original project, this fork also adds or changes:
+
+- custom icons for AI CLIs and common developer tools
+- Bash 3.2-compatible scripts for macOS stock Bash
+- cached git, forge, and metrics widgets with background refreshes
+- a more development-focused default status layout
 
 ## Configuration
 
-Add these lines to your `.tmux.conf`:
+Minimal setup:
 
-### Theme Flavor
+```tmux
+set -g @plugin "https://github.com/jamylak/gruvbox-tmux"
 
-```bash
-set -g @gruvbox-tmux_theme "medium"   # medium | soft | default is medium
-set -g @gruvbox-tmux_transparent 0    # 1 | 0
+set -g @gruvbox-tmux_theme "medium"
+set -g @gruvbox-tmux_transparent 0
 set -g @gruvbox-tmux_status_interval 10
 ```
 
-### Terminal icons
+Theme options:
 
-```bash
-set -g @gruvbox-tmux_terminal_icon 
-set -g @gruvbox-tmux_active_terminal_icon 
-set -g @gruvbox-tmux_claude_icon 🌼
-set -g @gruvbox-tmux_copilot_icon 🐙
-set -g @gruvbox-tmux_codex_icon 🤖
+```tmux
+set -g @gruvbox-tmux_theme "medium"   # light | soft | medium | hard
+set -g @gruvbox-tmux_transparent 0    # 0 | 1
+set -g @gruvbox-tmux_status_interval 10
 ```
 
-Built-in app badges now cover:
+Window, pane, and zoom number styles:
 
-- AI CLIs: Claude Code, Copilot, Codex
-- editors: Helix, Neovim/Vim, Emacs
-- tools: Yazi, Lazygit, btop
-- shell/session: fish, tmux, ssh
-- CLIs: gh, glab, gcloud, Terraform/OpenTofu, Docker/Compose, psql, Cargo/Rust, Python/Uvicorn, Nushell
-
-### Number styles
-
-
-```bash
-set -g @gruvbox-tmux_window_id_style hsquare  # hsquare | fsquare | sub | super | arabic | earabic
-set -g @gruvbox-tmux_pane_id_style super      # hsquare | fsquare | sub | super | arabic | earabic
-set -g @gruvbox-tmux_zoom_id_style dsquare    # hsquare | fsquare | sub | super | arabic | earabic
+```tmux
+set -g @gruvbox-tmux_window_id_style digital
+set -g @gruvbox-tmux_pane_id_style hsquare
+set -g @gruvbox-tmux_zoom_id_style dsquare
 ```
 
-### Widgets
+Supported styles (untested for now):
 
-This fork's default status line shows:
+- `hide`
+- `digital`
+- `arabic`
+- `fsquare`
+- `hsquare`
+- `dsquare`
+- `super`
+- `sub`
+- `earabic`
 
-- left: prefix/copy-mode/normal icons with the session name
-- right: git status, forge status, battery, and CPU/RAM metrics
+Terminal and AI CLI icons:
 
-You can tune the widgets with the following options.
+```tmux
+set -g @gruvbox-tmux_terminal_icon ""
+set -g @gruvbox-tmux_active_terminal_icon ""
+set -g @gruvbox-tmux_claude_icon "🌼"
+set -g @gruvbox-tmux_copilot_icon "🐙"
+set -g @gruvbox-tmux_codex_icon "🤖"
+```
 
-#### Time widget
+Built-in command icon coverage includes:
 
-This widget is hidden by default. To enable it:
+- Claude Code, Copilot, Codex
+- Neovim/Vim, Helix, Emacs
+- Yazi, Lazygit, btop
+- fish, tmux, ssh
+- gh, glab, gcloud
+- Terraform/OpenTofu, Docker, Node package managers
+- Rust, Python, Uvicorn, Postgres, Nushell
 
-```bash
+Widget toggles:
+
+```tmux
+set -g @gruvbox-tmux_show_git 1
+set -g @gruvbox-tmux_show_wbg 1
+set -g @gruvbox-tmux_show_metrics 1
+set -g @gruvbox-tmux_show_battery_widget 1   # battery is opt-in
+set -g @gruvbox-tmux_show_datetime 0
+```
+
+Battery options:
+
+```tmux
+set -g @gruvbox-tmux_battery_name "BAT0"
+set -g @gruvbox-tmux_battery_low_threshold 25
+```
+
+Clock options:
+
+```tmux
 set -g @gruvbox-tmux_show_datetime 1
+set -g @gruvbox-tmux_time_format "12H"   # 12H | 24H | hide
 ```
 
-Time options
+## Notes
 
-```bash
-set -g @gruvbox-tmux_time_format 12H
-```
-
-##### Available Options
-- `24H`: 18:30
-- `12H`: 6:30 PM
-
-#### Battery Widget
-
-```bash
-set -g @gruvbox-tmux_show_battery_widget 1     # 0 to disable
-set -g @gruvbox-tmux_battery_name "BAT0"       # run `ls /sys/class/power_supply` to know
-set -g @gruvbox-tmux_battery_low_threshold 25 
-```
-
-#### System metrics widget
-
-This widget is enabled by default.
-
-```bash
-set -g @gruvbox-tmux_show_metrics 0
-```
-
-It shows CPU and RAM usage and supports macOS and Linux.
-
-
-### Snapshots
-
-![Hard](screenshots/hard.png)
-![Light](screenshots/light.png)
+- The git status widget is repo-aware and uses a shared cache plus background refresh instead of recomputing in every pane.
+- The forge widget shows GitHub or GitLab work items for the current repo and also uses cached background refreshes.
+- The metrics widget now shares cached CPU/RAM samples across tmux panes and sessions for the same user.
