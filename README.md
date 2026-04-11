@@ -10,7 +10,7 @@ It keeps the gruvbox palette, but the layout and widgets are tuned around:
 - Git repo status in the right status bar
 - GitHub/GitLab workbench status via `gh` or `glab`
 - battery and system metrics widgets
-- cached background refreshes for the heavier widgets so tmux stays responsive
+- a single bounded status renderer with shared caches for the heavier widgets
 
 ## Requirements
 
@@ -43,7 +43,7 @@ Compared with the original project, this fork also adds or changes:
 
 - custom icons for AI CLIs and common developer tools
 - Bash 3.2-compatible scripts for macOS stock Bash
-- cached git, forge, and metrics widgets with background refreshes
+- a single cached right-side renderer for git, forge, battery, and metrics
 - a more development-focused default status layout
 
 ## Configuration
@@ -132,6 +132,6 @@ set -g @gruvbox-tmux_time_format "12H"   # 12H | 24H | hide
 
 ## Notes
 
-- The git status widget is repo-aware and uses a shared cache plus background refresh instead of recomputing in every pane.
-- The forge widget shows GitHub or GitLab work items for the current repo and also uses cached background refreshes.
-- The metrics widget now shares cached CPU/RAM samples across tmux panes and sessions for the same user.
+- The right side of the status line is rendered by a single shell command per redraw instead of one command per widget.
+- The window list uses tmux-native formats for icons and styled numbers, so it does not fork a shell for each window entry.
+- Git, forge, and metrics data still use shared caches, but cache refreshes are bounded by `status-interval` rather than triggering extra redraws.
