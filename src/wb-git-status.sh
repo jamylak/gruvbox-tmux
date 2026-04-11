@@ -112,6 +112,22 @@ release_lock() {
   rmdir "$lock_dir" 2>/dev/null
 }
 
+refresh_cache_async() {
+  (
+    trap release_lock EXIT
+
+    tmp_file=$(mktemp "${CACHE_ROOT}/${CACHE_KEY}.XXXXXX") || exit 0
+    status_output=$(build_status "$TARGET_PATH")
+
+    if ! printf '%s' "$status_output" > "$tmp_file"; then
+      rm -f "$tmp_file"
+      exit 0
+    fi
+
+    mv "$tmp_file" "$CACHE_FILE"
+  ) >/dev/null 2>&1 </dev/null &
+}
+
 CACHE_ROOT="${TMPDIR:-/tmp}/gruvbox-tmux-wb-git-status"
 mkdir -p "$CACHE_ROOT" 2>/dev/null || exit 0
 
@@ -122,31 +138,16 @@ TTL=$(cache_ttl)
 NOW=$(date +%s)
 
 if [[ -f $CACHE_FILE ]]; then
+  printf '%s\n' "$(cat "$CACHE_FILE")"
+
   CACHE_AGE=$((NOW - $(cache_mtime "$CACHE_FILE")))
   if ((CACHE_AGE < TTL)); then
-    printf '%s\n' "$(cat "$CACHE_FILE")"
     exit 0
   fi
+else
+  printf '\n'
 fi
 
 if acquire_lock; then
-  trap release_lock EXIT
-
-  tmp_file=$(mktemp "${CACHE_ROOT}/${CACHE_KEY}.XXXXXX") || exit 0
-  status_output=$(build_status "$TARGET_PATH")
-
-  if ! printf '%s' "$status_output" > "$tmp_file"; then
-    rm -f "$tmp_file"
-    exit 0
-  fi
-
-  mv "$tmp_file" "$CACHE_FILE"
-  printf '%s\n' "$status_output"
-  exit 0
-fi
-
-if [[ -f $CACHE_FILE ]]; then
-  printf '%s\n' "$(cat "$CACHE_FILE")"
-else
-  printf '%s\n' "$(build_status "$TARGET_PATH")"
+  refresh_cache_async
 fi

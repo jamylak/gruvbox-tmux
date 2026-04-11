@@ -53,6 +53,23 @@ release_lock() {
     rmdir "$lock_dir" 2>/dev/null
 }
 
+refresh_cache_async() {
+    local cache_file=$1
+    local cache_root=$2
+    local lock_dir=$3
+    local builder=$4
+    shift 4
+
+    (
+        local output
+
+        trap 'release_lock "$lock_dir"' EXIT
+
+        output=$("$builder" "$@")
+        write_cache "$cache_file" "$cache_root" "$output" || true
+    ) >/dev/null 2>&1 </dev/null &
+}
+
 render_cached() {
     local ttl=$1
     local cache_root=$2
@@ -62,7 +79,7 @@ render_cached() {
 
     local cache_file="${cache_root}/${cache_key}.cache"
     local lock_dir="${cache_root}/${cache_key}.lock"
-    local now cache_age output
+    local now cache_age
 
     mkdir -p "$cache_root" 2>/dev/null || {
         "$builder" "$@"
@@ -79,18 +96,10 @@ render_cached() {
     fi
 
     if acquire_lock "$lock_dir"; then
-        output=$("$builder" "$@")
-        if write_cache "$cache_file" "$cache_root" "$output"; then
-            release_lock "$lock_dir"
-            printf '%s' "$output"
-        else
-            release_lock "$lock_dir"
-            read_file "$cache_file" 2>/dev/null || printf '%s' "$output"
-        fi
-        return
+        refresh_cache_async "$cache_file" "$cache_root" "$lock_dir" "$builder" "$@"
     fi
 
-    read_file "$cache_file" 2>/dev/null || "$builder" "$@"
+    read_file "$cache_file" 2>/dev/null || printf ''
 }
 
 status_interval() {
