@@ -1,3 +1,7 @@
+󰑓 This been archived in favour of https://github.com/jamylak/rustbox-tmux
+
+----------------
+
 # Gruvbox Tmux
 
 ![Bottom Bar](assets/bottom_bar1.png)
